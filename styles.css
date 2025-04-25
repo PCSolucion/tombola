@@ -1,0 +1,197 @@
+:root {
+    --background-dark: #1a1a1a;
+    --background-medium: #2a2a2a;
+    --background-light: #3a3a3a;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --accent-gold: #ffd700;
+    --accent-green: #4CAF50;
+    --accent-red: #ff4444;
+    --grid-size: 5;
+}
+
+body {
+    background-color: var(--background-dark);
+    color: var(--text-primary);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: var(--accent-gold);
+    text-shadow: 0 0 10px rgba(255,215,0,0.3);
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.current-number-display {
+    background-color: var(--background-medium);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    grid-row: span 2;
+}
+
+#currentNumber {
+    font-size: 4em;
+    color: var(--accent-gold);
+    margin: 20px 0;
+    text-shadow: 0 0 20px rgba(255,215,0,0.5);
+}
+
+.drawn-numbers {
+    background-color: var(--background-medium);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+#drawnNumbersList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+.drawn-number {
+    background-color: var(--background-light);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.player-card {
+    background-color: var(--background-medium);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    padding: 10px;
+}
+
+.card-number {
+    background-color: var(--background-light);
+    color: var(--text-primary);
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card-number.marked {
+    background-color: var(--accent-green);
+    text-decoration: line-through;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.control-button {
+    background-color: var(--accent-gold);
+    color: var(--background-dark);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.control-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255,215,0,0.5);
+}
+
+.control-button:disabled {
+    background-color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.prize-section {
+    background-color: var(--background-medium);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.prize-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background-color: var(--background-light);
+    border-radius: 10px;
+}
+
+.prize-image {
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+}
+
+.prize-name {
+    font-size: 1.5em;
+    color: var(--accent-gold);
+    text-align: center;
+}
+
+.prize-description {
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+@keyframes numberAppear {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.drawn-number {
+    animation: numberAppear 0.3s ease-out;
+}
+
+@keyframes highlight {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.highlight {
+    animation: highlight 0.5s ease-in-out;
+}
