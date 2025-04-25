@@ -15,89 +15,113 @@ body {
     color: var(--text-primary);
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 10px;
     min-height: 100vh;
 }
 
 .game-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
 }
 
 h1 {
     text-align: center;
     color: var(--accent-gold);
     text-shadow: 0 0 10px rgba(255,215,0,0.3);
+    margin: 10px 0;
+    font-size: 2em;
 }
 
 .game-board {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
-    margin-bottom: 20px;
+    grid-template-columns: 0.8fr 2fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.game-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .current-number-display {
     background-color: var(--background-medium);
-    padding: 20px;
+    padding: 15px;
     border-radius: 15px;
     text-align: center;
-    grid-row: span 2;
+    height: fit-content;
+}
+
+.current-number-display h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
 }
 
 #currentNumber {
-    font-size: 4em;
+    font-size: 3.5em;
     color: var(--accent-gold);
-    margin: 20px 0;
+    margin: 10px 0;
     text-shadow: 0 0 20px rgba(255,215,0,0.5);
 }
 
 .drawn-numbers {
     background-color: var(--background-medium);
-    padding: 20px;
+    padding: 15px;
     border-radius: 15px;
+}
+
+.drawn-numbers h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
 }
 
 #drawnNumbersList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-    gap: 10px;
-    padding: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+    gap: 8px;
+    padding: 8px;
 }
 
 .drawn-number {
     background-color: var(--background-light);
     color: var(--text-primary);
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     font-weight: bold;
+    font-size: 0.9em;
 }
 
 .player-card {
     background-color: var(--background-medium);
-    padding: 20px;
+    padding: 15px;
     border-radius: 15px;
+}
+
+.player-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
 }
 
 .card-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    padding: 10px;
+    gap: 8px;
+    padding: 8px;
 }
 
 .card-number {
     background-color: var(--background-light);
     color: var(--text-primary);
-    padding: 15px;
+    padding: 12px 8px;
     text-align: center;
-    border-radius: 10px;
-    font-size: 1.2em;
+    border-radius: 8px;
+    font-size: 1.1em;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -110,17 +134,17 @@ h1 {
 .controls {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin: 20px 0;
+    gap: 15px;
+    margin: 15px 0;
 }
 
 .control-button {
     background-color: var(--accent-gold);
     color: var(--background-dark);
     border: none;
-    padding: 15px 30px;
-    border-radius: 25px;
-    font-size: 1.2em;
+    padding: 12px 25px;
+    border-radius: 20px;
+    font-size: 1.1em;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -135,40 +159,64 @@ h1 {
     cursor: not-allowed;
 }
 
-.prize-section {
+.prizes-table {
     background-color: var(--background-medium);
-    padding: 20px;
+    padding: 15px;
     border-radius: 15px;
-    margin-top: 20px;
+    height: 100%;
 }
 
-.prize-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 20px;
-    background-color: var(--background-light);
-    border-radius: 10px;
+.prizes-table h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
 }
 
-.prize-image {
-    width: 150px;
-    height: 150px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 10px;
+#prizesTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
 }
 
-.prize-name {
-    font-size: 1.5em;
+#prizesTable th,
+#prizesTable td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--background-light);
+    transition: all 0.3s ease;
+}
+
+#prizesTable th {
     color: var(--accent-gold);
-    text-align: center;
+    font-size: 1em;
+    padding-top: 0;
 }
 
-.prize-description {
-    color: var(--text-secondary);
-    text-align: center;
+#prizesTable tr {
+    transition: all 0.3s ease;
+}
+
+#prizesTable tr.current-prize {
+    background-color: rgba(147, 112, 219, 0.3);
+    transform: scale(1.02);
+    box-shadow: 0 0 10px rgba(147, 112, 219, 0.5);
+}
+
+#prizesTable tr.current-prize td {
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+}
+
+#prizesTable tr.winner-prize {
+    background-color: rgba(255, 140, 0, 0.4);
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.6);
+}
+
+#prizesTable tr.winner-prize td {
+    font-size: 1em;
+    font-weight: bold;
+    color: var(--accent-gold);
 }
 
 @keyframes numberAppear {
@@ -194,4 +242,31 @@ h1 {
 
 .highlight {
     animation: highlight 0.5s ease-in-out;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .game-board {
+        grid-template-columns: 1fr 2fr 1fr;
+    }
+    
+    #currentNumber {
+        font-size: 3em;
+    }
+    
+    .card-number {
+        padding: 10px 6px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width: 992px) {
+    .game-board {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+    
+    .prizes-table {
+        max-height: none;
+    }
 }

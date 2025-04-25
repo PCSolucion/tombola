@@ -1,75 +1,15 @@
-// Configuración de premios con sus imágenes correspondientes
+// Configuración de premios
 const prizes = [
-    {
-        name: "🏆 Royal Flush",
-        description: "¡Premio mayor! Un viaje todo pagado",
-        requiredMarks: 10,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "0 0" // Posición en el sprite de la imagen de Royal Flush
-    },
-    {
-        name: "🎰 Escalera de Color",
-        description: "¡Felicidades! Una consola de videojuegos",
-        requiredMarks: 9,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-150px 0" // Ajusta según la posición en el sprite
-    },
-    {
-        name: "🎲 Póker",
-        description: "¡Increíble! Un smartphone de última generación",
-        requiredMarks: 8,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-300px 0"
-    },
-    {
-        name: "🎮 Full House",
-        description: "¡Genial! Un set de auriculares gaming",
-        requiredMarks: 7,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-450px 0"
-    },
-    {
-        name: "🎯 Color",
-        description: "¡Excelente! Una tarjeta de regalo de $100",
-        requiredMarks: 6,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-600px 0"
-    },
-    {
-        name: "🎪 Escalera",
-        description: "¡Muy bien! Un juego de mesa premium",
-        requiredMarks: 5,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-750px 0"
-    },
-    {
-        name: "🎨 Trío",
-        description: "¡Bien hecho! Una camiseta exclusiva",
-        requiredMarks: 4,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-900px 0"
-    },
-    {
-        name: "🎭 Doble Pareja",
-        description: "¡Buen trabajo! Un llavero coleccionable",
-        requiredMarks: 3,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-1050px 0"
-    },
-    {
-        name: "🎪 Pareja",
-        description: "¡Gracias por participar! Un sticker decorativo",
-        requiredMarks: 2,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-1200px 0"
-    },
-    {
-        name: "🃏 Carta Alta",
-        description: "¡Sigue intentando! Una entrada para la próxima rifa",
-        requiredMarks: 1,
-        image: "https://raw.githubusercontent.com/PCSolucion/NW_poker_NW/main/cartas.png",
-        spritePosition: "-1350px 0"
-    }
+    { matches: 10, name: "🏆 Premio Legendario", description: "Viaje a Disneyland + 5000€" },
+    { matches: 9, name: "👑 Premio Épico", description: "MacBook Pro última generación" },
+    { matches: 8, name: "💎 Premio Supremo", description: "PlayStation 5 + TV 4K 55'" },
+    { matches: 7, name: "🎮 Premio Élite", description: "Nintendo Switch OLED + 5 juegos" },
+    { matches: 6, name: "📱 Premio Superior", description: "iPhone último modelo" },
+    { matches: 5, name: "🎧 Premio Especial", description: "AirPods Pro + Apple Watch" },
+    { matches: 4, name: "🎁 Premio Plus", description: "500€ en tarjeta regalo" },
+    { matches: 3, name: "🎨 Premio Extra", description: "Set gaming (teclado + ratón + auriculares)" },
+    { matches: 2, name: "🎭 Premio Básico", description: "50€ en Amazon" },
+    { matches: 1, name: "🎪 Premio Inicial", description: "Poder jugar otra vez gratis" }
 ];
 
 // Variables del juego
@@ -79,16 +19,36 @@ let playerNumbers = [];
 let markedNumbers = [];
 let isGameRunning = false;
 
-// Sonido de premio (reutilizado del juego original)
+// Sonidos del juego
 const premioSound = new Audio('https://res.cloudinary.com/pcsolucion/video/upload/v1742121077/premio_bsbuz9.m4a');
+const finalSound = new Audio('https://res.cloudinary.com/pcsolucion/video/upload/v1745595826/jv53ncinnbm45o3dasvi.mp3');
 premioSound.preload = 'auto';
+finalSound.preload = 'auto';
 
 // Inicialización del juego
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('startButton').addEventListener('click', toggleGame);
     document.getElementById('newCardButton').addEventListener('click', generateNewCard);
     generateNewCard();
+    initializePrizesTable();
 });
+
+// Inicializar tabla de premios
+function initializePrizesTable() {
+    const tbody = document.querySelector('#prizesTable tbody');
+    tbody.innerHTML = '';
+    
+    // Crear filas en orden descendente (10 a 1)
+    prizes.forEach(prize => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${prize.matches} ✓</td>
+            <td>${prize.name}</td>
+            <td>${prize.description}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
 
 // Generar números aleatorios únicos
 function generateUniqueNumbers(count, max) {
@@ -96,7 +56,7 @@ function generateUniqueNumbers(count, max) {
     while(numbers.size < count) {
         numbers.add(Math.floor(Math.random() * max) + 1);
     }
-    return Array.from(numbers);
+    return Array.from(numbers).sort((a, b) => a - b); // Ordenar números para mejor lectura
 }
 
 // Generar nueva tarjeta para el jugador
@@ -113,23 +73,16 @@ function generateNewCard() {
         cardGrid.appendChild(numberDiv);
     });
 
-    updatePrizeDisplay();
-}
+    // Limpiar resaltados de la tabla de premios
+    const rows = document.querySelectorAll('#prizesTable tbody tr');
+    rows.forEach(row => {
+        row.classList.remove('current-prize');
+        row.classList.remove('winner-prize');
+    });
 
-// Actualizar visualización del premio
-function updatePrizeDisplay() {
-    const markedCount = markedNumbers.length;
-    let currentPrize = prizes.find(prize => prize.requiredMarks === markedCount) || 
-                      {name: "Sigue jugando", description: "¡Marca más números para ganar!", image: "", spritePosition: "0 0"};
-
-    document.getElementById('prizeName').textContent = currentPrize.name;
-    document.getElementById('prizeDescription').textContent = currentPrize.description;
-    
-    const prizeImage = document.getElementById('prizeImage');
-    if (currentPrize.image) {
-        prizeImage.style.backgroundImage = `url(${currentPrize.image})`;
-        prizeImage.style.backgroundPosition = currentPrize.spritePosition;
-    }
+    // Resetear número actual y números sorteados
+    document.getElementById('currentNumber').textContent = '--';
+    document.getElementById('drawnNumbersList').innerHTML = '';
 }
 
 // Iniciar/Detener el juego
@@ -139,25 +92,32 @@ function toggleGame() {
 
     if (!isGameRunning) {
         // Iniciar juego
+        if (drawnNumbers.length >= 20) {
+            generateNewCard(); // Reiniciar si ya se jugaron los 20 números
+        }
+        
         isGameRunning = true;
         startButton.textContent = 'Detener';
         newCardButton.disabled = true;
-        drawnNumbers = [];
-        document.getElementById('drawnNumbersList').innerHTML = '';
+        
+        // Limpiar resaltados anteriores
+        const rows = document.querySelectorAll('#prizesTable tbody tr');
+        rows.forEach(row => {
+            row.classList.remove('winner-prize');
+        });
         
         gameInterval = setInterval(drawNumber, 2000);
     } else {
         // Detener juego
         isGameRunning = false;
-        startButton.textContent = 'Iniciar Juego';
-        newCardButton.disabled = false;
+        startButton.textContent = 'Continuar';
         clearInterval(gameInterval);
     }
 }
 
 // Sortear un nuevo número
 function drawNumber() {
-    if (drawnNumbers.length >= 50) {
+    if (drawnNumbers.length >= 20) {
         endGame();
         return;
     }
@@ -169,9 +129,13 @@ function drawNumber() {
 
     drawnNumbers.push(newNumber);
     
-    // Actualizar visualización
-    document.getElementById('currentNumber').textContent = newNumber;
+    // Actualizar visualización del número actual
+    const currentNumberDisplay = document.getElementById('currentNumber');
+    currentNumberDisplay.textContent = newNumber;
+    currentNumberDisplay.classList.add('highlight');
+    setTimeout(() => currentNumberDisplay.classList.remove('highlight'), 500);
     
+    // Añadir a la lista de números sorteados
     const numberDiv = document.createElement('div');
     numberDiv.className = 'drawn-number';
     numberDiv.textContent = newNumber;
@@ -193,18 +157,39 @@ function checkNumber(number) {
                 div.classList.add('marked');
                 div.classList.add('highlight');
                 
-                // Reproducir sonido
+                // Reproducir sonido de acierto
                 premioSound.currentTime = 0;
                 premioSound.play().catch(e => console.log("Error al reproducir sonido:", e));
             }
         });
-
-        updatePrizeDisplay();
         
-        // Verificar si se completó la tarjeta
+        // Actualizar resaltado de premio actual
+        updatePrizeHighlight();
+        
+        // Si se completan los 10 números, finalizar el juego
         if (markedNumbers.length === 10) {
-            setTimeout(endGame, 1000);
+            setTimeout(endGame, 500);
         }
+    }
+}
+
+// Actualizar resaltado del premio actual
+function updatePrizeHighlight() {
+    const rows = document.querySelectorAll('#prizesTable tbody tr');
+    
+    // Eliminar todos los resaltados
+    rows.forEach(row => {
+        row.classList.remove('current-prize');
+        row.classList.remove('winner-prize');
+    });
+    
+    if (markedNumbers.length > 0) {
+        // Resaltar el premio actual
+        const currentPrizeRow = rows[10 - markedNumbers.length];
+        currentPrizeRow.classList.add('current-prize');
+        
+        // Hacer scroll suave hasta el premio actual en la tabla
+        currentPrizeRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 }
 
@@ -212,12 +197,38 @@ function checkNumber(number) {
 function endGame() {
     clearInterval(gameInterval);
     isGameRunning = false;
-    document.getElementById('startButton').textContent = 'Iniciar Juego';
+    document.getElementById('startButton').textContent = 'Nuevo Juego';
     document.getElementById('newCardButton').disabled = false;
     
-    if (markedNumbers.length === 10) {
-        alert('¡FELICIDADES! ¡Has completado tu tarjeta!');
-    } else {
-        alert('Juego terminado. Has marcado ' + markedNumbers.length + ' números.');
+    // Eliminar resaltado actual y establecer premio final
+    const rows = document.querySelectorAll('#prizesTable tbody tr');
+    rows.forEach(row => row.classList.remove('current-prize'));
+    
+    if (markedNumbers.length > 0) {
+        const winnerRow = rows[10 - markedNumbers.length];
+        winnerRow.classList.add('winner-prize');
+        winnerRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        // Reproducir sonido de finalización
+        finalSound.currentTime = 0;
+        finalSound.play().catch(e => console.log("Error al reproducir sonido final:", e));
     }
 }
+
+// Evento para mostrar números restantes al hacer hover sobre el contenedor de números sorteados
+document.addEventListener('DOMContentLoaded', () => {
+    const drawnNumbersContainer = document.querySelector('.drawn-numbers');
+    const originalTitle = drawnNumbersContainer.querySelector('h3').textContent;
+    
+    drawnNumbersContainer.addEventListener('mouseenter', () => {
+        if (isGameRunning) {
+            const remaining = 20 - drawnNumbers.length;
+            drawnNumbersContainer.querySelector('h3').textContent = 
+                `Números Sorteados (Faltan: ${remaining})`;
+        }
+    });
+    
+    drawnNumbersContainer.addEventListener('mouseleave', () => {
+        drawnNumbersContainer.querySelector('h3').textContent = originalTitle;
+    });
+});
