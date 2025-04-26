@@ -5,48 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tómbola Virtual</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="game-container">
-        <h1>🎲 Tómbola Virtual 🎲</h1>
+        <header>
+            <h1><i class="fas fa-dice"></i> Tómbola Virtual <i class="fas fa-dice"></i></h1>
+        </header>
         
         <div class="game-board">
-            <div class="current-number-display">
-                <h2>Número Actual</h2>
-                <div id="currentNumber">--</div>
+            <div class="column-left">
+                <div class="current-number-display">
+                    <h2><i class="fas fa-hashtag"></i> Número Actual</h2>
+                    <div id="currentNumber" class="number-display">--</div>
+                    <div class="number-status">Esperando sorteo...</div>
+                </div>
+                
+                <div class="drawn-numbers">
+                    <h3><i class="fas fa-list-ol"></i> Números Sorteados</h3>
+                    <div id="drawnNumbersList" class="numbers-list"></div>
+                </div>
             </div>
 
             <div class="game-section">
-                <div class="drawn-numbers">
-                    <h3>Números Sorteados</h3>
-                    <div id="drawnNumbersList"></div>
-                </div>
-
                 <div class="player-card">
-                    <h3>Tu Tarjeta</h3>
+                    <h3><i class="fas fa-ticket-alt"></i> Tu Tarjeta</h3>
                     <div id="playerCard" class="card-grid"></div>
                 </div>
             </div>
 
             <div class="prizes-table">
-                <h3>Tabla de Premios</h3>
-                <table id="prizesTable">
-                    <thead>
-                        <tr>
-                            <th>Aciertos</th>
-                            <th>Premio</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                <h3><i class="fas fa-trophy"></i> Tabla de Premios</h3>
+                <div class="table-container">
+                    <table id="prizesTable">
+                        <thead>
+                            <tr>
+                                <th>Aciertos</th>
+                                <th>Premio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="controls">
-            <button id="startButton" class="control-button">Iniciar Juego</button>
-            <button id="newCardButton" class="control-button">Nueva Tarjeta</button>
+        <div class="controls" style="display:none;">
+            <button id="startButton" class="control-button primary-button">
+                <i class="fas fa-play"></i> Iniciar Juego
+            </button>
+            <button id="newCardButton" class="control-button secondary-button">
+                <i class="fas fa-sync-alt"></i> Nueva Tarjeta
+            </button>
         </div>
+
+        <footer class="game-footer">
+            <p>Desarrollado con <i class="fas fa-heart text-accent"></i> | Tómbola Virtual &copy; 2025</p>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>

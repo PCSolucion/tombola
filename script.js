@@ -25,12 +25,25 @@ const finalSound = new Audio('https://res.cloudinary.com/pcsolucion/video/upload
 premioSound.preload = 'auto';
 finalSound.preload = 'auto';
 
+// Referencias DOM
+const currentNumberDisplay = document.getElementById('currentNumber');
+const numberStatusDisplay = document.querySelector('.number-status');
+const startButton = document.getElementById('startButton');
+const newCardButton = document.getElementById('newCardButton');
+
 // Inicialización del juego
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('startButton').addEventListener('click', toggleGame);
-    document.getElementById('newCardButton').addEventListener('click', generateNewCard);
+    startButton.addEventListener('click', toggleGame);
+    newCardButton.addEventListener('click', generateNewCard);
     generateNewCard();
     initializePrizesTable();
+    
+    // Iniciar el juego automáticamente después de un breve retraso
+    setTimeout(() => {
+        if (!isGameRunning) {
+            toggleGame();
+        }
+    }, 1500);
 });
 
 // Inicializar tabla de premios
@@ -42,9 +55,13 @@ function initializePrizesTable() {
     prizes.forEach(prize => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${prize.matches} ✓</td>
-            <td>${prize.name}</td>
-            <td>${prize.description}</td>
+            <td><span class="match-count">${prize.matches}</span> <i class="fas fa-check"></i></td>
+            <td>
+                <div class="prize-info">
+                    <div class="prize-name">${prize.name}</div>
+                    <div class="prize-description">${prize.description}</div>
+                </div>
+            </td>
         `;
         tbody.appendChild(row);
     });
@@ -61,7 +78,7 @@ function generateUniqueNumbers(count, max) {
 
 // Generar nueva tarjeta para el jugador
 function generateNewCard() {
-    playerNumbers = generateUniqueNumbers(10, 50);
+    playerNumbers = generateUniqueNumbers(10, 100);
     markedNumbers = [];
     const cardGrid = document.getElementById('playerCard');
     cardGrid.innerHTML = '';
@@ -81,23 +98,23 @@ function generateNewCard() {
     });
 
     // Resetear número actual y números sorteados
-    document.getElementById('currentNumber').textContent = '--';
+    currentNumberDisplay.textContent = '--';
+    numberStatusDisplay.textContent = 'Esperando sorteo...';
     document.getElementById('drawnNumbersList').innerHTML = '';
+    drawnNumbers = [];
 }
 
 // Iniciar/Detener el juego
 function toggleGame() {
-    const startButton = document.getElementById('startButton');
-    const newCardButton = document.getElementById('newCardButton');
-
     if (!isGameRunning) {
         // Iniciar juego
-        if (drawnNumbers.length >= 20) {
-            generateNewCard(); // Reiniciar si ya se jugaron los 20 números
+        if (drawnNumbers.length >= 30) {
+            generateNewCard(); // Reiniciar si ya se jugaron los 30 números
         }
         
         isGameRunning = true;
-        startButton.textContent = 'Detener';
+        startButton.innerHTML = '<i class="fas fa-stop"></i> Detener';
+        numberStatusDisplay.textContent = 'Sorteando...';
         newCardButton.disabled = true;
         
         // Limpiar resaltados anteriores
@@ -110,27 +127,27 @@ function toggleGame() {
     } else {
         // Detener juego
         isGameRunning = false;
-        startButton.textContent = 'Continuar';
+        startButton.innerHTML = '<i class="fas fa-play"></i> Continuar';
+        numberStatusDisplay.textContent = 'Juego en pausa';
         clearInterval(gameInterval);
     }
 }
 
 // Sortear un nuevo número
 function drawNumber() {
-    if (drawnNumbers.length >= 20) {
+    if (drawnNumbers.length >= 30) {
         endGame();
         return;
     }
 
     let newNumber;
     do {
-        newNumber = Math.floor(Math.random() * 50) + 1;
+        newNumber = Math.floor(Math.random() * 100) + 1;
     } while (drawnNumbers.includes(newNumber));
 
     drawnNumbers.push(newNumber);
     
     // Actualizar visualización del número actual
-    const currentNumberDisplay = document.getElementById('currentNumber');
     currentNumberDisplay.textContent = newNumber;
     currentNumberDisplay.classList.add('highlight');
     setTimeout(() => currentNumberDisplay.classList.remove('highlight'), 500);
@@ -141,12 +158,16 @@ function drawNumber() {
     numberDiv.textContent = newNumber;
     document.getElementById('drawnNumbersList').appendChild(numberDiv);
 
+    // Actualizar estado
+    numberStatusDisplay.textContent = `${drawnNumbers.length} de 30 números sorteados`;
+
     // Verificar si el jugador tiene el número
     checkNumber(newNumber);
 }
 
 // Verificar si el número sorteado está en la tarjeta del jugador
 function checkNumber(number) {
+    // Código normal
     if (playerNumbers.includes(number) && !markedNumbers.includes(number)) {
         markedNumbers.push(number);
         
@@ -166,6 +187,9 @@ function checkNumber(number) {
         // Actualizar resaltado de premio actual
         updatePrizeHighlight();
         
+        // Actualizar estado
+        numberStatusDisplay.textContent = `¡Número encontrado! Tienes ${markedNumbers.length} aciertos`;
+        
         // Si se completan los 10 números, finalizar el juego
         if (markedNumbers.length === 10) {
             setTimeout(endGame, 500);
@@ -177,19 +201,23 @@ function checkNumber(number) {
 function updatePrizeHighlight() {
     const rows = document.querySelectorAll('#prizesTable tbody tr');
     
-    // Eliminar todos los resaltados
+    // Eliminar todos los resaltados de "current-prize"
     rows.forEach(row => {
         row.classList.remove('current-prize');
         row.classList.remove('winner-prize');
     });
     
     if (markedNumbers.length > 0) {
-        // Resaltar el premio actual
-        const currentPrizeRow = rows[10 - markedNumbers.length];
-        currentPrizeRow.classList.add('current-prize');
+        // Índice del premio actual (0-based, por eso es 10 - markedNumbers.length)
+        const currentPrizeIndex = 10 - markedNumbers.length;
+        
+        // Resaltar el premio actual y todos los premios anteriores
+        for (let i = 9; i >= currentPrizeIndex; i--) {
+            rows[i].classList.add('current-prize');
+        }
         
         // Hacer scroll suave hasta el premio actual en la tabla
-        currentPrizeRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        rows[currentPrizeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 }
 
@@ -197,21 +225,32 @@ function updatePrizeHighlight() {
 function endGame() {
     clearInterval(gameInterval);
     isGameRunning = false;
-    document.getElementById('startButton').textContent = 'Nuevo Juego';
-    document.getElementById('newCardButton').disabled = false;
+    startButton.innerHTML = '<i class="fas fa-redo"></i> Nuevo Juego';
+    numberStatusDisplay.textContent = 'Juego finalizado';
+    newCardButton.disabled = false;
     
     // Eliminar resaltado actual y establecer premio final
     const rows = document.querySelectorAll('#prizesTable tbody tr');
     rows.forEach(row => row.classList.remove('current-prize'));
     
     if (markedNumbers.length > 0) {
-        const winnerRow = rows[10 - markedNumbers.length];
-        winnerRow.classList.add('winner-prize');
-        winnerRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const winnerIndex = 10 - markedNumbers.length;
+        
+        // Marcar todos los premios ganados (el actual y los anteriores)
+        for (let i = 9; i >= winnerIndex; i--) {
+            rows[i].classList.add('winner-prize');
+        }
+        
+        // Scroll al premio más alto ganado
+        rows[winnerIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         
         // Reproducir sonido de finalización
         finalSound.currentTime = 0;
         finalSound.play().catch(e => console.log("Error al reproducir sonido final:", e));
+
+        // Actualizar estado con mensaje de premio
+        const mainPrize = prizes[winnerIndex];
+        numberStatusDisplay.textContent = `¡Ganaste! Premio: ${mainPrize.name}`;
     }
 }
 
@@ -222,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     drawnNumbersContainer.addEventListener('mouseenter', () => {
         if (isGameRunning) {
-            const remaining = 20 - drawnNumbers.length;
+            const remaining = 30 - drawnNumbers.length;
             drawnNumbersContainer.querySelector('h3').textContent = 
                 `Números Sorteados (Faltan: ${remaining})`;
         }
