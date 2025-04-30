@@ -1,15 +1,15 @@
 // Configuración de premios
 const prizes = [
-    { matches: 10, name: "🏆 Premio Legendario", description: "Viaje a Disneyland + 5000€" },
-    { matches: 9, name: "👑 Premio Épico", description: "MacBook Pro última generación" },
-    { matches: 8, name: "💎 Premio Supremo", description: "PlayStation 5 + TV 4K 55'" },
-    { matches: 7, name: "🎮 Premio Élite", description: "Nintendo Switch OLED + 5 juegos" },
-    { matches: 6, name: "📱 Premio Superior", description: "iPhone último modelo" },
-    { matches: 5, name: "🎧 Premio Especial", description: "AirPods Pro + Apple Watch" },
-    { matches: 4, name: "🎁 Premio Plus", description: "500€ en tarjeta regalo" },
-    { matches: 3, name: "🎨 Premio Extra", description: "Set gaming (teclado + ratón + auriculares)" },
-    { matches: 2, name: "🎭 Premio Básico", description: "50€ en Amazon" },
-    { matches: 1, name: "🎪 Premio Inicial", description: "Poder jugar otra vez gratis" }
+    { matches: 10, name: "🏆 Premio Legendario", description: "50x Polvo de Gemas Potente", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981585/gemstonedustt5_umaswr.png" },
+    { matches: 9, name: "👑 Premio Épico", description: "10x Piedra de Afilar Potente", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 8, name: "💎 Premio Supremo", description: "1x Escarabajo de Oro", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981450/goldenscarab_ujkn8w.png" },
+    { matches: 7, name: "🎮 Premio Élite", description: "x10 Poción de protección de Corruptos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981397/wardcorruptedt5_czrva0.png" },
+    { matches: 6, name: "📱 Premio Superior", description: "x20 Revestimientos contra Corruptos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981288/coatingcorruptedt5_rgalvp.png" },
+    { matches: 5, name: "🎧 Premio Especial", description: "x15 Amanecer del Desierto", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981157/agavedrinkt5_r1whsb.png" },
+    { matches: 4, name: "🎁 Premio Plus", description: "5x Arena Cargada", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981018/sandt4_se7d6p.png" },
+    { matches: 3, name: "🧪 Premio Extra", description: "5x Azufre", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745980933/sulphurt1_pliugn.png" },
+    { matches: 2, name: "🏺 Premio Básico", description: "20x Bloque de Arenisca", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745980834/sandstonechunk_vzasqt.png" },
+    { matches: 1, name: "👻 Premio Inicial", description: "2x Pegote de Ectoplasma", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745980551/ancientectoplasm_qowcto.png" }
 ];
 
 // Variables del juego
@@ -59,7 +59,9 @@ function initializePrizesTable() {
             <td>
                 <div class="prize-info">
                     <div class="prize-name">${prize.name}</div>
-                    <div class="prize-description">${prize.description}</div>
+                    <div class="prize-description">
+                        ${prize.image ? `<div class="prize-content"><img src="${prize.image}" alt="${prize.description}" class="prize-image"><div class="prize-text">${prize.description}</div></div>` : prize.description}
+                    </div>
                 </div>
             </td>
         `;
@@ -108,8 +110,8 @@ function generateNewCard() {
 function toggleGame() {
     if (!isGameRunning) {
         // Iniciar juego
-        if (drawnNumbers.length >= 30) {
-            generateNewCard(); // Reiniciar si ya se jugaron los 30 números
+        if (drawnNumbers.length >= 42) {
+            generateNewCard(); // Reiniciar si ya se jugaron los 42 números
         }
         
         isGameRunning = true;
@@ -123,7 +125,7 @@ function toggleGame() {
             row.classList.remove('winner-prize');
         });
         
-        gameInterval = setInterval(drawNumber, 2000);
+        gameInterval = setInterval(drawNumber, 1500);
     } else {
         // Detener juego
         isGameRunning = false;
@@ -135,7 +137,7 @@ function toggleGame() {
 
 // Sortear un nuevo número
 function drawNumber() {
-    if (drawnNumbers.length >= 30) {
+    if (drawnNumbers.length >= 42) {
         endGame();
         return;
     }
@@ -159,7 +161,7 @@ function drawNumber() {
     document.getElementById('drawnNumbersList').appendChild(numberDiv);
 
     // Actualizar estado
-    numberStatusDisplay.textContent = `${drawnNumbers.length} de 30 números sorteados`;
+    numberStatusDisplay.textContent = `${drawnNumbers.length} de 42 números sorteados`;
 
     // Verificar si el jugador tiene el número
     checkNumber(newNumber);
@@ -261,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     drawnNumbersContainer.addEventListener('mouseenter', () => {
         if (isGameRunning) {
-            const remaining = 30 - drawnNumbers.length;
+            const remaining = 42 - drawnNumbers.length;
             drawnNumbersContainer.querySelector('h3').textContent = 
                 `Números Sorteados (Faltan: ${remaining})`;
         }

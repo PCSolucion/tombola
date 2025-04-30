@@ -265,6 +265,7 @@ header {
 #prizesTable tr {
     transition: var(--transition);
     line-height: 1.2;
+    height: 56px;
 }
 
 #prizesTable tr.current-prize {
@@ -427,11 +428,34 @@ h1 i:last-child {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    align-items: flex-start;
 }
 
 .prize-description {
     font-size: 0.85em;
     line-height: 1.2;
+    text-align: left;
+}
+
+.prize-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.prize-image {
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+}
+
+.prize-text {
+    font-size: 1em;
+    font-weight: 500;
+    text-align: left;
 }
 
 /* Eliminar todos los estilos de la ruleta */
