@@ -10,7 +10,7 @@
 <body>
     <div class="game-container">
         <header>
-            <h1><i class="fas fa-dice"></i> Tómbola Virtual <i class="fas fa-dice"></i></h1>
+            <h1><i class="fas fa-ticket-alt"></i> Tómbola Virtual <i class="fas fa-ticket-alt"></i></h1>
         </header>
         
         <div class="game-board">
@@ -31,6 +31,16 @@
                 <div class="player-card">
                     <h3><i class="fas fa-ticket-alt"></i> Tu Tarjeta</h3>
                     <div id="playerCard" class="card-grid"></div>
+                </div>
+                
+                <!-- Contenedor de la ruleta -->
+                <div class="roulette-container">
+                    <h3><i class="fas fa-sync-alt"></i> Ruleta de Premios</h3>
+                    <div class="wheel-container">
+                        <canvas id="wheel" width="300" height="300"></canvas>
+                        <div class="wheel-pointer"></div>
+                    </div>
+                    <button id="spin-wheel" class="spin-button"><i class="fas fa-play"></i> Girar</button>
                 </div>
             </div>
 
