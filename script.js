@@ -1,15 +1,15 @@
 // Configuración de premios
 const prizes = [
-    { matches: 10, name: "", description: "50x Polvo de Gemas Potente", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981585/gemstonedustt5_umaswr.png" },
-    { matches: 9, name: "", description: "10x Piedra de Afilar Potente", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 8, name: "", description: "1x Escarabajo de Oro", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981450/goldenscarab_ujkn8w.png" },
-    { matches: 7, name: "", description: "x10 Poción de protección de Corruptos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981397/wardcorruptedt5_czrva0.png" },
-    { matches: 6, name: "", description: "x20 Revestimientos contra Corruptos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981288/coatingcorruptedt5_rgalvp.png" },
-    { matches: 5, name: "", description: "x15 Amanecer del Desierto", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981157/agavedrinkt5_r1whsb.png" },
-    { matches: 4, name: "", description: "5x Arena Cargada", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981018/sandt4_se7d6p.png" },
-    { matches: 3, name: "", description: "5x Azufre", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745980933/sulphurt1_pliugn.png" },
-    { matches: 2, name: "", description: "20x Bloque de Arenisca", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745980834/sandstonechunk_vzasqt.png" },
-    { matches: 1, name: "", description: "2x Pegote de Ectoplasma", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745980551/ancientectoplasm_qowcto.png" }
+    { matches: 10, name: "", description: "15x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 9, name: "", description: "10x Revestimientos de Bestias", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531492/coatingbeastt4_e6tbsr.png" },
+    { matches: 8, name: "", description: "10x Revestimientos de Perdidos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531552/coatinglostt5_hmownm.png" },
+    { matches: 7, name: "", description: "10x Revestimientos de Tierramarga ", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531578/coatingangryeartht5_xgy6ye.png" },
+    { matches: 6, name: "", description: "10x Revestimientos de Antigüos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531328/coatingancientt5_svd2zv.png" },
+    { matches: 5, name: "", description: "10x Revestimientos de Antigüos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531328/coatingancientt5_svd2zv.png" },
+    { matches: 4, name: "", description: "15x Amanecer del Desierto", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981157/agavedrinkt5_r1whsb.png" },
+    { matches: 3, name: "", description: "15x Amanecer del Desierto", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981157/agavedrinkt5_r1whsb.png" },
+    { matches: 2, name: "", description: "10x Revestimientos de Corruptos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981288/coatingcorruptedt5_rgalvp.png" },
+    { matches: 1, name: "", description: "10x Revestimientos de Corruptos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981288/coatingcorruptedt5_rgalvp.png" }
 ];
 
 // Variables del juego
