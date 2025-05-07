@@ -1,15 +1,15 @@
 // Configuración de premios
 const prizes = [
     { matches: 10, name: "", description: "15x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 9, name: "", description: "10x Revestimientos de Bestias", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531492/coatingbeastt4_e6tbsr.png" },
-    { matches: 8, name: "", description: "10x Revestimientos de Perdidos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531552/coatinglostt5_hmownm.png" },
-    { matches: 7, name: "", description: "10x Revestimientos de Tierramarga ", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531578/coatingangryeartht5_xgy6ye.png" },
-    { matches: 6, name: "", description: "10x Revestimientos de Antigüos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531328/coatingancientt5_svd2zv.png" },
-    { matches: 5, name: "", description: "10x Revestimientos de Antigüos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1746531328/coatingancientt5_svd2zv.png" },
-    { matches: 4, name: "", description: "15x Amanecer del Desierto", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981157/agavedrinkt5_r1whsb.png" },
-    { matches: 3, name: "", description: "15x Amanecer del Desierto", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981157/agavedrinkt5_r1whsb.png" },
-    { matches: 2, name: "", description: "10x Revestimientos de Corruptos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981288/coatingcorruptedt5_rgalvp.png" },
-    { matches: 1, name: "", description: "10x Revestimientos de Corruptos", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981288/coatingcorruptedt5_rgalvp.png" }
+    { matches: 9, name: "", description: "13x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 8, name: "", description: "11x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 7, name: "", description: "9x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 6, name: "", description: "7x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 5, name: "", description: "5x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 4, name: "", description: "4x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 3, name: "", description: "3x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 2, name: "", description: "2x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 1, name: "", description: "1x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" }
 ];
 
 // Variables del juego
@@ -38,10 +38,9 @@ const rouletteOptions = [
     { text: "400 🪙", color: "#151515" },
     { text: "350 🪙", color: "#181818" },
     { text: "1000 🪙", color: "#050505" },
-    { text: "200 🪙", color: "#202020" },
+    { text: "+1 🏆", color: "#121212", isMultiplier: true },
     { text: "750 🪙", color: "#0a0a0a" },
     { text: "+3 🏆", color: "#121212", isMultiplier: true }
-   
 ];
 
 // Inicialización del juego
@@ -222,7 +221,7 @@ function checkNumber(number) {
 function updatePrizeHighlight() {
     const rows = document.querySelectorAll('#prizesTable tbody tr');
     
-    // Eliminar todos los resaltados de "current-prize"
+    // Eliminar todos los resaltados
     rows.forEach(row => {
         row.classList.remove('current-prize');
         row.classList.remove('winner-prize');
@@ -232,10 +231,8 @@ function updatePrizeHighlight() {
         // Índice del premio actual (0-based, por eso es 10 - markedNumbers.length)
         const currentPrizeIndex = 10 - markedNumbers.length;
         
-        // Resaltar el premio actual y todos los premios anteriores
-        for (let i = 9; i >= currentPrizeIndex; i--) {
-            rows[i].classList.add('current-prize');
-        }
+        // Resaltar solo el premio actual
+        rows[currentPrizeIndex].classList.add('current-prize');
         
         // Hacer scroll suave hasta el premio actual en la tabla
         rows[currentPrizeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -255,16 +252,12 @@ function endGame() {
     rows.forEach(row => row.classList.remove('current-prize'));
     
     if (markedNumbers.length > 0) {
-        // Obtener todas las filas que estaban resaltadas como premio actual
-        const currentPrizes = document.querySelectorAll('#prizesTable tbody tr.current-prize');
         const actualPrizeIndex = 10 - markedNumbers.length;
         
-        // Marcar todos los premios ganados (el actual y los anteriores)
-        for (let i = 9; i >= actualPrizeIndex; i--) {
-            rows[i].classList.add('winner-prize');
-        }
+        // Marcar solo el premio final como ganado
+        rows[actualPrizeIndex].classList.add('winner-prize');
         
-        // Scroll al premio más alto ganado
+        // Scroll al premio ganado
         rows[actualPrizeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
         // Actualizar estado con mensaje de premio
@@ -368,6 +361,8 @@ function drawWheel(ctx, centerX, centerY, radius) {
             prizeValue = 2000; // Máximo valor para +3
         } else if (option.text.includes("+2")) {
             prizeValue = 1500; // Alto valor para +2
+        } else if (option.text.includes("+1")) {
+            prizeValue = 1000; // Valor medio para +1
         } else if (option.text.includes("🪙")) {
             prizeValue = parseInt(option.text.split(' ')[0]);
         }
@@ -424,6 +419,12 @@ function drawWheel(ctx, centerX, centerY, radius) {
                 gradient.addColorStop(0.7, '#302000');
                 gradient.addColorStop(0.9, '#603000');
                 gradient.addColorStop(1, '#904000');
+            } else if (option.text.includes("+1")) {
+                // Degradado para +1 (verde dorado)
+                gradient.addColorStop(0, '#000000');
+                gradient.addColorStop(0.7, '#203000');
+                gradient.addColorStop(0.9, '#406000');
+                gradient.addColorStop(1, '#609000');
             } else {
                 // Degradado por defecto
                 gradient.addColorStop(0, '#000000');
@@ -468,6 +469,8 @@ function drawWheel(ctx, centerX, centerY, radius) {
             ctx.fillStyle = '#ff0000'; // Rojo para +3
         } else if (option.text.includes("+2")) {
             ctx.fillStyle = '#ffaa00'; // Naranja para +2
+        } else if (option.text.includes("+1")) {
+            ctx.fillStyle = '#ffcc00'; // Amarillo para +1
         } else {
             // Degradado normal para otros premios
             const r = Math.floor(155 + (100 * intensity));
@@ -742,10 +745,11 @@ function spinWheel() {
         
         // Identificar si es +3 o +2 usando includes para mayor seguridad
         const isJackpot = selectedPrizeText.includes("+3");
-        const isMultiplier = selectedPrizeText.includes("+2") && !isJackpot; // Evitar detectar +3 como +2
+        const isMultiplier = selectedPrizeText.includes("+2") && !isJackpot;
+        const isPlusOne = selectedPrizeText.includes("+1") && !isJackpot && !isMultiplier;
         
-        // Si es un multiplicador de premios (+2 o +3)
-        if (isJackpot || isMultiplier) {
+        // Si es un multiplicador de premios (+1, +2 o +3)
+        if (isJackpot || isMultiplier || isPlusOne) {
             // Obtener todas las filas de la tabla de premios
             const prizeTable = document.getElementById('prizesTable');
             if (!prizeTable) {
@@ -761,7 +765,7 @@ function spinWheel() {
             
             if (currentMarkedCount > 0) {
                 // Determinar cuántos niveles adicionales añadir
-                const levelsToAdd = isJackpot ? 3 : 2;
+                const levelsToAdd = isJackpot ? 3 : (isMultiplier ? 2 : 1);
                 
                 // Calcular el nuevo número de aciertos simulados (limitado a 10)
                 const newMarkedCount = Math.min(10, currentMarkedCount + levelsToAdd);
@@ -772,7 +776,7 @@ function spinWheel() {
                 
                 // Logs de depuración
                 console.log(`Premio seleccionado: ${selectedPrizeText}`);
-                console.log(`Es +3: ${isJackpot}, Es +2: ${isMultiplier}`);
+                console.log(`Es +3: ${isJackpot}, Es +2: ${isMultiplier}, Es +1: ${isPlusOne}`);
                 console.log(`Aciertos actuales: ${currentMarkedCount}, Aciertos a añadir: ${levelsToAdd}, Nuevos aciertos: ${newMarkedCount}`);
                 console.log(`Índice premio actual: ${currentPrizeIndex}, Nuevo índice premio: ${newPrizeIndex}`);
                 
@@ -806,14 +810,18 @@ function spinWheel() {
                 }
                 
                 // Mensaje para el usuario
-                numberStatusDisplay.textContent = isJackpot 
-                    ? `¡+3! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!` 
-                    : `¡+2! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
+                let message = "";
+                if (isJackpot) {
+                    message = `¡+3! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
+                } else if (isMultiplier) {
+                    message = `¡+2! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
+                } else {
+                    message = `¡+1! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
+                }
+                numberStatusDisplay.textContent = message;
                 
                 // Mostrar texto con el premio
-                const resultText = isJackpot 
-                    ? "¡+3 ACIERTOS!" 
-                    : "¡+2 ACIERTOS!";
+                const resultText = isJackpot ? "¡+3 ACIERTOS!" : (isMultiplier ? "¡+2 ACIERTOS!" : "¡+1 ACIERTO!");
                 showRouletteResult(resultText, true);
             }
             
@@ -827,11 +835,7 @@ function spinWheel() {
                 spinButton.style.color = '#ffffff';
                 spinButton.style.boxShadow = '0 0 15px rgba(255, 0, 0, 0.7)';
                 spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡¡¡+3!!!';
-                
-                // Reproducir un sonido especial
-                const jackpotSound = new Audio('https://res.cloudinary.com/pcsolucion/video/upload/v1745595826/jv53ncinnbm45o3dasvi.mp3');
-                jackpotSound.play().catch(e => console.log("Error al reproducir sonido de jackpot:", e));
-            } else {
+            } else if (isMultiplier) {
                 console.log(`¡+2! ¡Subiste 2 niveles de premio! 🏆`);
                 
                 // Añadir un efecto visual al botón para +2
@@ -840,9 +844,15 @@ function spinWheel() {
                 spinButton.style.color = '#ffffff';
                 spinButton.style.boxShadow = '0 0 15px rgba(255, 170, 0, 0.7)';
                 spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡+2!';
+            } else {
+                console.log(`¡+1! ¡Subiste 1 nivel de premio! 🏆`);
                 
-                // Reproducir sonido de premio
-                playFinalSound();
+                // Añadir un efecto visual al botón para +1
+                spinButton.style.transition = 'all 0.3s';
+                spinButton.style.backgroundColor = '#60ff00';
+                spinButton.style.color = '#ffffff';
+                spinButton.style.boxShadow = '0 0 15px rgba(96, 255, 0, 0.7)';
+                spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡+1!';
             }
             
             // Restaurar el botón después de 5 segundos
@@ -856,16 +866,12 @@ function spinWheel() {
             console.log(`¡Has ganado 750 monedas de oro! 🪙`);
             // Mostrar texto con el premio
             showRouletteResult("¡750 MONEDAS! 🪙");
-            // Reproducir el sonido final para premios normales
-            playFinalSound();
         } else {
             // Extraer solo el número del texto del premio
             const prizeValue = parseInt(selectedPrizeText.split(' ')[0]);
             console.log(`¡Has ganado ${prizeValue} monedas de oro! 🪙`);
             // Mostrar texto con el premio
             showRouletteResult(`¡${prizeValue} MONEDAS! 🪙`);
-            // Reproducir el sonido final para premios normales
-            playFinalSound();
         }
     }, animationDuration); // Duración de la animación
 }
