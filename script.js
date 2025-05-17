@@ -33,13 +33,13 @@ const newCardButton = document.getElementById('newCardButton');
 
 // Configuración y funcionalidad de la ruleta
 const rouletteOptions = [
-    { text: "500 🪙", color: "#0d0d0d" },
-    { text: "+2 🏆", color: "#121212", isMultiplier: true },
-    { text: "400 🪙", color: "#151515" },
-    { text: "350 🪙", color: "#181818" },
-    { text: "1000 🪙", color: "#050505" },
     { text: "+1 🏆", color: "#121212", isMultiplier: true },
-    { text: "750 🪙", color: "#0a0a0a" },
+    { text: "+2 🏆", color: "#121212", isMultiplier: true },
+    { text: "+1 🏆", color: "#121212", isMultiplier: true },
+    { text: "+1 🏆", color: "#121212", isMultiplier: true },
+    { text: "+3 🏆", color: "#121212", isMultiplier: true },
+    { text: "+1 🏆", color: "#121212", isMultiplier: true },
+    { text: "+2 🏆", color: "#121212", isMultiplier: true },
     { text: "+3 🏆", color: "#121212", isMultiplier: true }
 ];
 
@@ -98,7 +98,7 @@ function generateUniqueNumbers(count, max) {
 
 // Generar nueva tarjeta para el jugador
 function generateNewCard() {
-    playerNumbers = generateUniqueNumbers(10, 100);
+    playerNumbers = generateUniqueNumbers(12, 100);
     markedNumbers = [];
     const cardGrid = document.getElementById('playerCard');
     cardGrid.innerHTML = '';
@@ -128,8 +128,8 @@ function generateNewCard() {
 function toggleGame() {
     if (!isGameRunning) {
         // Iniciar juego
-        if (drawnNumbers.length >= 42) {
-            generateNewCard(); // Reiniciar si ya se jugaron los 42 números
+        if (drawnNumbers.length >= 30) {
+            generateNewCard(); // Reiniciar si ya se jugaron los 30 números
         }
         
         isGameRunning = true;
@@ -143,7 +143,8 @@ function toggleGame() {
             row.classList.remove('winner-prize');
         });
         
-        gameInterval = setInterval(drawNumber, 1500);
+        // Intervalo más rápido: 1000ms en lugar de 1500ms
+        gameInterval = setInterval(drawNumber, 1000);
     } else {
         // Detener juego
         isGameRunning = false;
@@ -155,8 +156,31 @@ function toggleGame() {
 
 // Sortear un nuevo número
 function drawNumber() {
-    if (drawnNumbers.length >= 42) {
+    if (drawnNumbers.length >= 30) {
         endGame();
+        // Verificar si es el último número sorteado
+        if (drawnNumbers.length === 30) {
+            // Esperar un momento para que el usuario vea el último número
+            setTimeout(() => {
+                // Girar la ruleta automáticamente
+                const wheelButton = document.getElementById('spin-wheel');
+                if (wheelButton) {
+                    // Simular un click en el botón de la ruleta
+                    wheelButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // Añadir efecto de pulsación al botón
+                    wheelButton.classList.add('highlight');
+                    setTimeout(() => {
+                        wheelButton.classList.remove('highlight');
+                    }, 500);
+                    
+                    // Girar la ruleta después de un breve retraso
+                    setTimeout(() => {
+                        spinWheel();
+                    }, 1000);
+                }
+            }, 2000);
+        }
         return;
     }
 
@@ -179,10 +203,16 @@ function drawNumber() {
     document.getElementById('drawnNumbersList').appendChild(numberDiv);
 
     // Actualizar estado
-    numberStatusDisplay.textContent = `${drawnNumbers.length} de 42 números sorteados`;
+    numberStatusDisplay.textContent = `${drawnNumbers.length} de 30 números sorteados`;
 
     // Verificar si el jugador tiene el número
     checkNumber(newNumber);
+    
+    // Si es el último número sorteado, girar la ruleta automáticamente
+    if (drawnNumbers.length === 30) {
+        // Añadir indicación visual
+        numberStatusDisplay.textContent = `¡Último número! Girando la ruleta de premios...`;
+    }
 }
 
 // Verificar si el número sorteado está en la tarjeta del jugador
@@ -204,13 +234,14 @@ function checkNumber(number) {
             }
         });
         
-        // Actualizar resaltado de premio actual
+        // Actualizar resaltado de premio actual, máximo 10 premios
         updatePrizeHighlight();
         
         // Actualizar estado
         numberStatusDisplay.textContent = `¡Número encontrado! Tienes ${markedNumbers.length} aciertos`;
         
-        // Si se completan los 10 números, finalizar el juego
+        // Si se completan los 10 aciertos, finalizar el juego
+        // Aunque la tarjeta tenga 12 números, el juego se gana con 10
         if (markedNumbers.length === 10) {
             setTimeout(endGame, 500);
         }
@@ -244,7 +275,13 @@ function endGame() {
     clearInterval(gameInterval);
     isGameRunning = false;
     startButton.innerHTML = '<i class="fas fa-redo"></i> Nuevo Juego';
-    numberStatusDisplay.textContent = 'Juego finalizado';
+    
+    // Cambiar el mensaje solo si no es el último número
+    // Si es el último número, el mensaje ya está configurado en drawNumber
+    if (drawnNumbers.length !== 30) {
+        numberStatusDisplay.textContent = 'Juego finalizado';
+    }
+    
     newCardButton.disabled = false;
     
     // Eliminar resaltado actual y establecer premio final
@@ -260,9 +297,11 @@ function endGame() {
         // Scroll al premio ganado
         rows[actualPrizeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-        // Actualizar estado con mensaje de premio
-        const mainPrize = prizes[actualPrizeIndex];
-        numberStatusDisplay.textContent = `¡Ganaste! Premio: ${mainPrize.description}`;
+        // Actualizar estado con mensaje de premio sólo si no es el último número
+        if (drawnNumbers.length !== 30) {
+            const mainPrize = prizes[actualPrizeIndex];
+            numberStatusDisplay.textContent = `¡Ganaste! Premio: ${mainPrize.description}`;
+        }
     }
 }
 
@@ -280,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     drawnNumbersContainer.addEventListener('mouseenter', () => {
         if (isGameRunning) {
-            const remaining = 42 - drawnNumbers.length;
+            const remaining = 30 - drawnNumbers.length;
             drawnNumbersContainer.querySelector('h3').textContent = 
                 `Números Sorteados (Faltan: ${remaining})`;
         }
@@ -355,7 +394,7 @@ function drawWheel(ctx, centerX, centerY, radius) {
     
     for (let i = 0; i < totalOptions; i++) {
         const option = rouletteOptions[i];
-        // Determinar el valor del premio para el degradado
+        // Todos los premios son multiplicadores, determinar tipo
         let prizeValue = 0;
         if (option.text.includes("+3")) {
             prizeValue = 2000; // Máximo valor para +3
@@ -363,11 +402,9 @@ function drawWheel(ctx, centerX, centerY, radius) {
             prizeValue = 1500; // Alto valor para +2
         } else if (option.text.includes("+1")) {
             prizeValue = 1000; // Valor medio para +1
-        } else if (option.text.includes("🪙")) {
-            prizeValue = parseInt(option.text.split(' ')[0]);
         }
         
-        const isPremiumPrize = option.isSpecial || option.isMultiplier; // Identificar premios especiales
+        const isPremiumPrize = option.isMultiplier; // Todos son premios especiales ahora
         
         // El marcador está en la parte superior (ángulo 270 grados o -Math.PI/2)
         // Necesitamos que el marcador apunte al centro de cada segmento
@@ -380,65 +417,35 @@ function drawWheel(ctx, centerX, centerY, radius) {
         ctx.arc(centerX, centerY, radius, startAngle, endAngle);
         ctx.closePath();
         
-        // Rellenar con el color del segmento o imagen para el premio especial
-        if (isPremiumPrize && option.image) {
-            // Cargar imagen para el premio especial
-            const img = new Image();
-            img.src = option.image;
-            
-            // Crear un patrón de imagen para el fondo del segmento
-            if (img.complete) {
-                // La imagen ya está cargada, crear patrón
-                createPrizeImagePattern(ctx, img, centerX, centerY, radius, startAngle, endAngle);
-            } else {
-                // Esperar a que la imagen cargue
-                img.onload = function() {
-                    createPrizeImagePattern(ctx, img, centerX, centerY, radius, startAngle, endAngle);
-                };
-                // Mientras tanto, usar un color
-                ctx.fillStyle = option.color;
-                ctx.fill();
-            }
-        } else if (isPremiumPrize) {
-            // Crear un patrón de degradado radial para los premios especiales
-            const gradient = ctx.createRadialGradient(
-                centerX, centerY, 0,
-                centerX, centerY, radius
-            );
-            
-            // Colores según sea x3 o x2
-            if (option.text.includes("+3")) {
-                // Degradado para x3 (rojo dorado)
-                gradient.addColorStop(0, '#000000');
-                gradient.addColorStop(0.7, '#300000');
-                gradient.addColorStop(0.9, '#600000');
-                gradient.addColorStop(1, '#900000');
-            } else if (option.text.includes("+2")) {
-                // Degradado para +2 (naranja dorado)
-                gradient.addColorStop(0, '#000000');
-                gradient.addColorStop(0.7, '#302000');
-                gradient.addColorStop(0.9, '#603000');
-                gradient.addColorStop(1, '#904000');
-            } else if (option.text.includes("+1")) {
-                // Degradado para +1 (verde dorado)
-                gradient.addColorStop(0, '#000000');
-                gradient.addColorStop(0.7, '#203000');
-                gradient.addColorStop(0.9, '#406000');
-                gradient.addColorStop(1, '#609000');
-            } else {
-                // Degradado por defecto
-                gradient.addColorStop(0, '#000000');
-                gradient.addColorStop(0.7, '#030303');
-                gradient.addColorStop(0.9, '#060606');
-                gradient.addColorStop(1, '#0a0a0a');
-            }
-            
-            ctx.fillStyle = gradient;
-            ctx.fill();
-        } else {
-            ctx.fillStyle = option.color;
-            ctx.fill();
+        // Crear un patrón de degradado radial para los premios especiales
+        const gradient = ctx.createRadialGradient(
+            centerX, centerY, 0,
+            centerX, centerY, radius
+        );
+        
+        // Colores según sea +3, +2 o +1
+        if (option.text.includes("+3")) {
+            // Degradado para +3 (rojo dorado)
+            gradient.addColorStop(0, '#000000');
+            gradient.addColorStop(0.7, '#300000');
+            gradient.addColorStop(0.9, '#600000');
+            gradient.addColorStop(1, '#900000');
+        } else if (option.text.includes("+2")) {
+            // Degradado para +2 (naranja dorado)
+            gradient.addColorStop(0, '#000000');
+            gradient.addColorStop(0.7, '#302000');
+            gradient.addColorStop(0.9, '#603000');
+            gradient.addColorStop(1, '#904000');
+        } else if (option.text.includes("+1")) {
+            // Degradado para +1 (verde dorado)
+            gradient.addColorStop(0, '#000000');
+            gradient.addColorStop(0.7, '#203000');
+            gradient.addColorStop(0.9, '#406000');
+            gradient.addColorStop(1, '#609000');
         }
+        
+        ctx.fillStyle = gradient;
+        ctx.fill();
         
         // Dibujar línea divisoria
         ctx.beginPath();
@@ -447,9 +454,17 @@ function drawWheel(ctx, centerX, centerY, radius) {
             centerX + Math.cos(endAngle) * radius,
             centerY + Math.sin(endAngle) * radius
         );
-        // Línea divisoria especial para el premio premium
-        ctx.strokeStyle = isPremiumPrize ? 'rgba(255, 215, 0, 0.3)' : 'rgba(255, 255, 255, 0.2)';
-        ctx.lineWidth = isPremiumPrize ? 2 : 1;
+        // Línea divisoria especial para el premio
+        if (option.text.includes("+3")) {
+            ctx.strokeStyle = 'rgba(255, 50, 50, 0.4)';
+            ctx.lineWidth = 2;
+        } else if (option.text.includes("+2")) {
+            ctx.strokeStyle = 'rgba(255, 170, 0, 0.4)';
+            ctx.lineWidth = 2;
+        } else {
+            ctx.strokeStyle = 'rgba(100, 255, 0, 0.3)';
+            ctx.lineWidth = 1;
+        }
         ctx.stroke();
         
         // Dibujar texto
@@ -461,54 +476,33 @@ function drawWheel(ctx, centerX, centerY, radius) {
         const textAngle = startAngle + anglePerOption / 2;
         ctx.rotate(textAngle);
         
-        // Crear un degradado para el texto basado en el valor del premio
-        const intensity = Math.min(1, prizeValue / 2000); // Normalizar entre 0 y 1, valor máximo ahora es 2000
-        
-        // Colores especiales para +2 y +3
+        // Colores especiales para los textos
         if (option.text.includes("+3")) {
-            ctx.fillStyle = '#ff0000'; // Rojo para +3
+            ctx.fillStyle = '#ff5050'; // Rojo para +3
+            ctx.font = 'bold 20px "Rubik", sans-serif';
+            ctx.shadowColor = 'rgba(255, 80, 80, 0.7)';
+            ctx.shadowBlur = 10;
         } else if (option.text.includes("+2")) {
             ctx.fillStyle = '#ffaa00'; // Naranja para +2
-        } else if (option.text.includes("+1")) {
-            ctx.fillStyle = '#ffcc00'; // Amarillo para +1
+            ctx.font = 'bold 18px "Rubik", sans-serif';
+            ctx.shadowColor = 'rgba(255, 170, 0, 0.7)';
+            ctx.shadowBlur = 8;
         } else {
-            // Degradado normal para otros premios
-            const r = Math.floor(155 + (100 * intensity));
-            const g = Math.floor(155 + (100 * intensity));
-            const b = Math.floor(0);
-            ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+            ctx.fillStyle = '#90ff00'; // Verde para +1
+            ctx.font = 'bold 16px "Rubik", sans-serif';
+            ctx.shadowColor = 'rgba(144, 255, 0, 0.7)';
+            ctx.shadowBlur = 6;
         }
         
         // Configurar la alineación del texto
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
         
-        // Ajustar la fuente según el tipo de premio
-        if (option.text.includes("+3") || option.text.includes("+2")) {
-            // Fuente más grande y en negrita para los multiplicadores
-            ctx.font = 'bold 18px "Rubik", sans-serif';
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
-            ctx.shadowBlur = 10;
-        } else {
-            // Fuente normal para el resto de premios
-            ctx.font = '14px "Rubik", sans-serif';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0)';
-            ctx.shadowBlur = 0;
-        }
-        
-        // Textos simplificados para multiplicadores
-        let displayText = option.text;
-        if (option.text.includes("+3")) {
-            displayText = "+3 🏆";
-        } else if (option.text.includes("+2")) {
-            displayText = "+2 🏆";
-        }
-        
         // Distancia desde el centro para el texto
         const textDistance = radius * 0.75;
         
         // Dibujar el texto simplemente alineado a la derecha
-        ctx.fillText(displayText, textDistance, 0);
+        ctx.fillText(option.text, textDistance, 0);
         
         // Restaurar sombra
         ctx.shadowColor = 'rgba(0, 0, 0, 0)';
@@ -519,29 +513,60 @@ function drawWheel(ctx, centerX, centerY, radius) {
         // Restaurar transformaciones
         ctx.restore();
         
-        // Añadir efecto de destellos para el premio premium
-        if (isPremiumPrize) {
-            // Calcular el punto medio del segmento para dibujar destellos
-            const midAngle = startAngle + anglePerOption / 2;
-            const midRadius = radius * 0.7;
+        // Añadir efecto de destellos para los premios
+        // Calcular el punto medio del segmento para dibujar destellos
+        const midAngle = startAngle + anglePerOption / 2;
+        const midRadius = radius * 0.7;
+        
+        // Más destellos para +3, menos para +1
+        let numDestellos = 5; // Para +1
+        let brilloMax = 0.6;
+        
+        if (option.text.includes("+3")) {
+            numDestellos = 15;
+            brilloMax = 1.0;
+        } else if (option.text.includes("+2")) {
+            numDestellos = 10;
+            brilloMax = 0.8;
+        }
+        
+        // Dibujar destellos - más apartados de los números
+        for (let j = 0; j < numDestellos; j++) {
+            // Ajustamos el rango de distribución para alejar los destellos del texto
+            // El texto está a textDistance = radius * 0.75
+            // Colocamos los destellos más cerca del centro y del borde
             
-            // Dibujar destellos
-            for (let j = 0; j < 10; j++) { // Más destellos para el JACKPOT
-                const sparkAngle = midAngle + (Math.random() * 0.8 - 0.4);
-                const sparkDist = midRadius * (0.5 + Math.random() * 0.8);
-                const sparkX = centerX + Math.cos(sparkAngle) * sparkDist;
-                const sparkY = centerY + Math.sin(sparkAngle) * sparkDist;
-                
-                // Estrellas más grandes y coloridas
-                const sparkSize = 1 + Math.random() * 3;
-                
-                // Colores aleatorios para los destellos
-                const hue = Math.floor(Math.random() * 360);
-                ctx.beginPath();
-                ctx.arc(sparkX, sparkY, sparkSize, 0, Math.PI * 2);
-                ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${0.6 + Math.random() * 0.4})`;
-                ctx.fill();
+            // Determinar si el destello va en la zona interna o externa
+            const zonaInterna = Math.random() > 0.5;
+            
+            let sparkRadius;
+            if (zonaInterna) {
+                // Zona interna: 20% a 45% del radio
+                sparkRadius = radius * (0.2 + Math.random() * 0.25);
+            } else {
+                // Zona externa: 80% a 95% del radio
+                sparkRadius = radius * (0.8 + Math.random() * 0.15);
             }
+            
+            const sparkAngle = midAngle + (Math.random() * 0.8 - 0.4);
+            const sparkX = centerX + Math.cos(sparkAngle) * sparkRadius;
+            const sparkY = centerY + Math.sin(sparkAngle) * sparkRadius;
+            
+            // Estrellas más grandes y coloridas
+            const sparkSize = 1 + Math.random() * 3;
+            
+            // Colores según el tipo de premio
+            let hue = 120; // Verde para +1
+            if (option.text.includes("+3")) {
+                hue = 0; // Rojo para +3
+            } else if (option.text.includes("+2")) {
+                hue = 35; // Naranja para +2
+            }
+            
+            ctx.beginPath();
+            ctx.arc(sparkX, sparkY, sparkSize, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${0.6 + Math.random() * brilloMax})`;
+            ctx.fill();
         }
     }
     
@@ -568,115 +593,6 @@ function drawWheel(ctx, centerX, centerY, radius) {
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
     ctx.lineWidth = 2;
     ctx.stroke();
-}
-
-// Función para crear un patrón con la imagen del premio
-function createPrizeImagePattern(ctx, img, centerX, centerY, radius, startAngle, endAngle) {
-    // Crear un canvas temporal para dibujar solo el segmento con la imagen
-    const tempCanvas = document.createElement('canvas');
-    const size = radius * 2 + 50; // Aumentado para tener más espacio
-    tempCanvas.width = size;
-    tempCanvas.height = size;
-    const tempCtx = tempCanvas.getContext('2d');
-    
-    // Centro del canvas temporal
-    const tempCenterX = size / 2;
-    const tempCenterY = size / 2;
-    
-    // Dibujar el segmento en el canvas temporal
-    tempCtx.save();
-    tempCtx.beginPath();
-    tempCtx.moveTo(tempCenterX, tempCenterY);
-    tempCtx.arc(tempCenterX, tempCenterY, radius, startAngle, endAngle);
-    tempCtx.closePath();
-    tempCtx.clip();
-    
-    // Aplicar un fondo oscuro para que el texto sea legible
-    tempCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    tempCtx.fill();
-    
-    // Calcular el ángulo medio del segmento
-    const midAngle = (startAngle + endAngle) / 2;
-    
-    // Calcular ancho del segmento en ángulo
-    const angleWidth = endAngle - startAngle;
-    
-    // Calcular una zona segura dentro del segmento (95% del ancho angular)
-    const safeAngleWidth = angleWidth * 0.95;
-    const safeStartAngle = midAngle - (safeAngleWidth / 2);
-    const safeEndAngle = midAngle + (safeAngleWidth / 2);
-    
-    // Calcular un rectángulo que quepa dentro del segmento seguro
-    // Usando coordenadas polares para definir los 4 puntos del rectángulo
-    const innerRadius = radius * 0.18; // Distancia desde el centro al borde interno (reducida aún más)
-    const outerRadius = radius * 0.95; // Distancia desde el centro al borde externo (aumentada aún más)
-    
-    // Crear una región de recorte para la imagen que abarque solo el área segura del segmento
-    tempCtx.save();
-    tempCtx.beginPath();
-    // Arco externo
-    tempCtx.arc(tempCenterX, tempCenterY, outerRadius, safeStartAngle, safeEndAngle);
-    // Línea al arco interno
-    tempCtx.lineTo(
-        tempCenterX + Math.cos(safeEndAngle) * innerRadius,
-        tempCenterY + Math.sin(safeEndAngle) * innerRadius
-    );
-    // Arco interno (en dirección contraria)
-    tempCtx.arc(tempCenterX, tempCenterY, innerRadius, safeEndAngle, safeStartAngle, true);
-    // Cerrar el camino
-    tempCtx.closePath();
-    // Definir esta forma como región de recorte
-    tempCtx.clip();
-    
-    // Calcular dimensiones proporcionales para mantener la relación de aspecto
-    const imgWidth = img.width;
-    const imgHeight = img.height;
-    const aspectRatio = imgWidth / imgHeight;
-    
-    // Calcular el ancho y alto disponibles basados en la geometría del segmento
-    const angleWidthRad = safeEndAngle - safeStartAngle;
-    const arcWidth = angleWidthRad * outerRadius * 1.5; // Ancho aproximado del arco externo (aumentado 50%)
-    const radialHeight = (outerRadius - innerRadius) * 1.5; // Altura radial del segmento (aumentada 50%)
-    
-    // Dimensiones escaladas para el segmento (ampliadas significativamente para ocupar todo el espacio)
-    let drawWidth, drawHeight;
-    
-    if (aspectRatio > (arcWidth / radialHeight)) {
-        // Imagen más ancha que el espacio disponible, ajustar por ancho
-        drawWidth = arcWidth;
-        drawHeight = drawWidth / aspectRatio;
-    } else {
-        // Imagen más alta que ancha o proporcionada, ajustar por altura
-        drawHeight = radialHeight;
-        drawWidth = drawHeight * aspectRatio;
-    }
-    
-    // Calcular la posición para centrar la imagen en el segmento (más cerca del borde)
-    const distFromCenter = (innerRadius + outerRadius) / 1.6; // Más cerca del borde externo
-    const imgCenterX = tempCenterX + Math.cos(midAngle) * distFromCenter;
-    const imgCenterY = tempCenterY + Math.sin(midAngle) * distFromCenter;
-    
-    // Dibujar la imagen, centrada en la posición calculada, con tamaño aumentado
-    tempCtx.translate(imgCenterX, imgCenterY);
-    tempCtx.rotate(midAngle + Math.PI/2); // Rotar la imagen para alinearla con el segmento
-    
-    // Escalar la imagen un 20% más grande y luego recortarla con el clip
-    const scaleBoost = 1.2; // Factor de aumento adicional
-    tempCtx.drawImage(img, -drawWidth*scaleBoost/2, -drawHeight*scaleBoost/2, drawWidth*scaleBoost, drawHeight*scaleBoost);
-    
-    // Restaurar el contexto
-    tempCtx.restore();
-    
-    // Aplicar un oscurecimiento adicional para que el texto sea legible
-    tempCtx.globalCompositeOperation = 'source-atop';
-    tempCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-    tempCtx.fillRect(0, 0, size, size);
-    
-    // Restaurar el contexto principal
-    tempCtx.restore();
-    
-    // Dibujar el segmento con la imagen en el canvas principal
-    ctx.drawImage(tempCanvas, centerX - tempCenterX, centerY - tempCenterY);
 }
 
 // Función para girar la ruleta
@@ -748,131 +664,119 @@ function spinWheel() {
         const isMultiplier = selectedPrizeText.includes("+2") && !isJackpot;
         const isPlusOne = selectedPrizeText.includes("+1") && !isJackpot && !isMultiplier;
         
-        // Si es un multiplicador de premios (+1, +2 o +3)
-        if (isJackpot || isMultiplier || isPlusOne) {
-            // Obtener todas las filas de la tabla de premios
-            const prizeTable = document.getElementById('prizesTable');
-            if (!prizeTable) {
-                console.error('No se encontró la tabla de premios');
-                return;
-            }
-            
-            const prizeRows = prizeTable.querySelectorAll('tbody tr');
-            console.log(`Total de filas en la tabla de premios: ${prizeRows.length}`);
-            
-            // Obtener el estado actual de aciertos
-            const currentMarkedCount = markedNumbers.length;
-            
-            if (currentMarkedCount > 0) {
-                // Determinar cuántos niveles adicionales añadir
-                const levelsToAdd = isJackpot ? 3 : (isMultiplier ? 2 : 1);
-                
-                // Calcular el nuevo número de aciertos simulados (limitado a 10)
-                const newMarkedCount = Math.min(10, currentMarkedCount + levelsToAdd);
-                
-                // Calcular los índices de premios correspondientes
-                const currentPrizeIndex = 10 - currentMarkedCount;
-                const newPrizeIndex = 10 - newMarkedCount;
-                
-                // Logs de depuración
-                console.log(`Premio seleccionado: ${selectedPrizeText}`);
-                console.log(`Es +3: ${isJackpot}, Es +2: ${isMultiplier}, Es +1: ${isPlusOne}`);
-                console.log(`Aciertos actuales: ${currentMarkedCount}, Aciertos a añadir: ${levelsToAdd}, Nuevos aciertos: ${newMarkedCount}`);
-                console.log(`Índice premio actual: ${currentPrizeIndex}, Nuevo índice premio: ${newPrizeIndex}`);
-                
-                // Limpiar todos los resaltados actuales
-                if (prizeRows.length > 0) {
-                    Array.from(prizeRows).forEach(row => {
-                        row.classList.remove('current-prize');
-                        row.classList.remove('winner-prize');
-                    });
-                    
-                    // Resaltar todos los premios correspondientes al nuevo número de aciertos
-                    // Iteramos desde el premio más bajo (índice 9) hasta el premio correspondiente
-                    // al nuevo número de aciertos (newPrizeIndex)
-                    for (let i = 9; i >= newPrizeIndex && i >= 0 && i < prizeRows.length; i--) {
-                        prizeRows[i].classList.add('current-prize');
-                        console.log(`Resaltando premio en posición ${i}`);
-                    }
-                    
-                    // Verificar cuántas filas terminaron resaltadas
-                    setTimeout(() => {
-                        const highlightedRows = document.querySelectorAll('#prizesTable tbody tr.current-prize');
-                        console.log(`Filas resaltadas después de aplicar +${levelsToAdd}: ${highlightedRows.length}`);
-                    }, 100);
-                    
-                    // Hacer scroll suave hasta el premio más alto iluminado
-                    if (newPrizeIndex >= 0 && newPrizeIndex < prizeRows.length) {
-                        prizeRows[newPrizeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }
-                } else {
-                    console.error('No se encontraron filas en la tabla de premios');
-                }
-                
-                // Mensaje para el usuario
-                let message = "";
-                if (isJackpot) {
-                    message = `¡+3! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
-                } else if (isMultiplier) {
-                    message = `¡+2! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
-                } else {
-                    message = `¡+1! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
-                }
-                numberStatusDisplay.textContent = message;
-                
-                // Mostrar texto con el premio
-                const resultText = isJackpot ? "¡+3 ACIERTOS!" : (isMultiplier ? "¡+2 ACIERTOS!" : "¡+1 ACIERTO!");
-                showRouletteResult(resultText, true);
-            }
-            
-            // Efectos visuales adicionales
-            if (isJackpot) {
-                console.log(`¡¡¡+3!!! ¡¡¡PREMIO MÁXIMO!!! 🌟🎉✨`);
-                
-                // Añadir un efecto visual al botón para el premio máximo
-                spinButton.style.transition = 'all 0.3s';
-                spinButton.style.backgroundColor = '#ff0000';
-                spinButton.style.color = '#ffffff';
-                spinButton.style.boxShadow = '0 0 15px rgba(255, 0, 0, 0.7)';
-                spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡¡¡+3!!!';
-            } else if (isMultiplier) {
-                console.log(`¡+2! ¡Subiste 2 niveles de premio! 🏆`);
-                
-                // Añadir un efecto visual al botón para +2
-                spinButton.style.transition = 'all 0.3s';
-                spinButton.style.backgroundColor = '#ffaa00';
-                spinButton.style.color = '#ffffff';
-                spinButton.style.boxShadow = '0 0 15px rgba(255, 170, 0, 0.7)';
-                spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡+2!';
-            } else {
-                console.log(`¡+1! ¡Subiste 1 nivel de premio! 🏆`);
-                
-                // Añadir un efecto visual al botón para +1
-                spinButton.style.transition = 'all 0.3s';
-                spinButton.style.backgroundColor = '#60ff00';
-                spinButton.style.color = '#ffffff';
-                spinButton.style.boxShadow = '0 0 15px rgba(96, 255, 0, 0.7)';
-                spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡+1!';
-            }
-            
-            // Restaurar el botón después de 5 segundos
-            setTimeout(() => {
-                spinButton.style.backgroundColor = '';
-                spinButton.style.color = '';
-                spinButton.style.boxShadow = '';
-                spinButton.innerHTML = '<i class="fas fa-play"></i> Girar';
-            }, 5000);
-        } else if (selectedPrizeText.includes("750")) {
-            console.log(`¡Has ganado 750 monedas de oro! 🪙`);
-            // Mostrar texto con el premio
-            showRouletteResult("¡750 MONEDAS! 🪙");
-        } else {
-            // Extraer solo el número del texto del premio
-            const prizeValue = parseInt(selectedPrizeText.split(' ')[0]);
-            console.log(`¡Has ganado ${prizeValue} monedas de oro! 🪙`);
-            // Mostrar texto con el premio
-            showRouletteResult(`¡${prizeValue} MONEDAS! 🪙`);
+        // Todos los premios ahora son multiplicadores (+1, +2 o +3)
+        // Obtener todas las filas de la tabla de premios
+        const prizeTable = document.getElementById('prizesTable');
+        if (!prizeTable) {
+            console.error('No se encontró la tabla de premios');
+            return;
         }
+        
+        const prizeRows = prizeTable.querySelectorAll('tbody tr');
+        console.log(`Total de filas en la tabla de premios: ${prizeRows.length}`);
+        
+        // Obtener el estado actual de aciertos
+        const currentMarkedCount = markedNumbers.length;
+        
+        if (currentMarkedCount > 0) {
+            // Determinar cuántos niveles adicionales añadir
+            const levelsToAdd = isJackpot ? 3 : (isMultiplier ? 2 : 1);
+            
+            // Calcular el nuevo número de aciertos simulados (limitado a 10)
+            const newMarkedCount = Math.min(10, currentMarkedCount + levelsToAdd);
+            
+            // Calcular los índices de premios correspondientes
+            const currentPrizeIndex = 10 - currentMarkedCount;
+            const newPrizeIndex = 10 - newMarkedCount;
+            
+            // Logs de depuración
+            console.log(`Premio seleccionado: ${selectedPrizeText}`);
+            console.log(`Es +3: ${isJackpot}, Es +2: ${isMultiplier}, Es +1: ${isPlusOne}`);
+            console.log(`Aciertos actuales: ${currentMarkedCount}, Aciertos a añadir: ${levelsToAdd}, Nuevos aciertos: ${newMarkedCount}`);
+            console.log(`Índice premio actual: ${currentPrizeIndex}, Nuevo índice premio: ${newPrizeIndex}`);
+            
+            // Limpiar todos los resaltados actuales
+            if (prizeRows.length > 0) {
+                Array.from(prizeRows).forEach(row => {
+                    row.classList.remove('current-prize');
+                    row.classList.remove('winner-prize');
+                });
+                
+                // Resaltar todos los premios correspondientes al nuevo número de aciertos
+                // Iteramos desde el premio más bajo (índice 9) hasta el premio correspondiente
+                // al nuevo número de aciertos (newPrizeIndex)
+                for (let i = 9; i >= newPrizeIndex && i >= 0 && i < prizeRows.length; i--) {
+                    prizeRows[i].classList.add('current-prize');
+                    console.log(`Resaltando premio en posición ${i}`);
+                }
+                
+                // Verificar cuántas filas terminaron resaltadas
+                setTimeout(() => {
+                    const highlightedRows = document.querySelectorAll('#prizesTable tbody tr.current-prize');
+                    console.log(`Filas resaltadas después de aplicar +${levelsToAdd}: ${highlightedRows.length}`);
+                }, 100);
+                
+                // Hacer scroll suave hasta el premio más alto iluminado
+                if (newPrizeIndex >= 0 && newPrizeIndex < prizeRows.length) {
+                    prizeRows[newPrizeIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            } else {
+                console.error('No se encontraron filas en la tabla de premios');
+            }
+            
+            // Mensaje para el usuario
+            let message = "";
+            if (isJackpot) {
+                message = `¡+3! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
+            } else if (isMultiplier) {
+                message = `¡+2! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
+            } else {
+                message = `¡+1! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
+            }
+            numberStatusDisplay.textContent = message;
+            
+            // Mostrar texto con el premio
+            const resultText = isJackpot ? "¡+3 ACIERTOS!" : (isMultiplier ? "¡+2 ACIERTOS!" : "¡+1 ACIERTO!");
+            showRouletteResult(resultText, true);
+        }
+        
+        // Efectos visuales adicionales
+        if (isJackpot) {
+            console.log(`¡¡¡+3!!! ¡¡¡PREMIO MÁXIMO!!! 🌟🎉✨`);
+            
+            // Añadir un efecto visual al botón para el premio máximo
+            spinButton.style.transition = 'all 0.3s';
+            spinButton.style.backgroundColor = '#ff0000';
+            spinButton.style.color = '#ffffff';
+            spinButton.style.boxShadow = '0 0 15px rgba(255, 0, 0, 0.7)';
+            spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡¡¡+3!!!';
+        } else if (isMultiplier) {
+            console.log(`¡+2! ¡Subiste 2 niveles de premio! 🏆`);
+            
+            // Añadir un efecto visual al botón para +2
+            spinButton.style.transition = 'all 0.3s';
+            spinButton.style.backgroundColor = '#ffaa00';
+            spinButton.style.color = '#ffffff';
+            spinButton.style.boxShadow = '0 0 15px rgba(255, 170, 0, 0.7)';
+            spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡+2!';
+        } else {
+            console.log(`¡+1! ¡Subiste 1 nivel de premio! 🏆`);
+            
+            // Añadir un efecto visual al botón para +1
+            spinButton.style.transition = 'all 0.3s';
+            spinButton.style.backgroundColor = '#60ff00';
+            spinButton.style.color = '#ffffff';
+            spinButton.style.boxShadow = '0 0 15px rgba(96, 255, 0, 0.7)';
+            spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡+1!';
+        }
+        
+        // Restaurar el botón después de 5 segundos
+        setTimeout(() => {
+            spinButton.style.backgroundColor = '';
+            spinButton.style.color = '';
+            spinButton.style.boxShadow = '';
+            spinButton.innerHTML = '<i class="fas fa-play"></i> Girar';
+        }, 5000);
     }, animationDuration); // Duración de la animación
 }
 
