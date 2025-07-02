@@ -1,4 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background-color: #f5f6fa;
+    color: #22223b;
+    margin: 0;
+    padding: 0;
+}
+
+/* Paleta de colores */
 :root {
+    --primary-color: #5f6caf;
+    --secondary-color: #f7b801;
+    --accent-color: #f86c6b;
+    --background-color: #f5f6fa;
+    --text-color: #22223b;
+    --premio-bg: #a259e6; /* Morado para premios */
     --background-primary: #121212;
     --background-dark: #0d0d0d;
     --background-medium: #1e1e1e;
@@ -19,16 +36,48 @@
     --grid-size: 5;
 }
 
-body {
-    background-color: var(--background-primary);
-    color: var(--text-primary);
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-    margin: 0;
-    padding: 16px;
-    min-height: 100vh;
-    line-height: 1.6;
-    background-image: radial-gradient(circle at top right, rgba(187, 134, 252, 0.07), transparent 60%),
-                     radial-gradient(circle at bottom left, rgba(3, 218, 198, 0.05), transparent 40%);
+/* Ejemplo de uso de la paleta */
+button, .btn {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+button:hover, .btn:hover {
+    background-color: var(--accent-color);
+}
+
+/* Fondo morado para premios en la tabla */
+.premio {
+    background-color: var(--premio-bg) !important;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Otros estilos generales */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+}
+th {
+    background: var(--primary-color);
+    color: #fff;
+}
+td {
+    color: var(--text-color);
 }
 
 .game-container {
@@ -632,4 +681,44 @@ h1 i:last-child {
 
 .spinning {
     animation: spin 8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--background-primary);
+        color: var(--text-primary);
+    }
+    table {
+        background: var(--background-dark);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    th {
+        background: var(--background-light);
+        color: var(--accent-primary);
+    }
+    td {
+        color: var(--text-light);
+    }
+    .drawn-numbers, .player-card, .roulette-container, .current-number-display {
+        background-color: var(--background-medium);
+        color: var(--text-light);
+        box-shadow: var(--shadow-md);
+    }
+    .number-display {
+        background-color: var(--background-light);
+        color: var(--accent-primary);
+    }
+    .spin-button {
+        background-color: var(--background-light);
+        color: var(--text-light);
+        border: 1px solid rgba(187, 134, 252, 0.3);
+    }
+    .spin-button:hover {
+        background-color: var(--accent-primary);
+        color: #fff;
+    }
+    .premio {
+        background-color: var(--premio-bg) !important;
+        color: #fff;
+    }
 }
