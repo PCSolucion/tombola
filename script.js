@@ -36,7 +36,7 @@ const rouletteOptions = [
     { text: "+1 🏆", color: "#121212", isMultiplier: true },
     { text: "+2 🏆", color: "#121212", isMultiplier: true },
     { text: "+1 🏆", color: "#121212", isMultiplier: true },
-    { text: "+1 🏆", color: "#121212", isMultiplier: true },
+    { text: "+4 🏆", color: "#7c3aed", isMultiplier: true, isSuper: true },
     { text: "+3 🏆", color: "#121212", isMultiplier: true },
     { text: "+1 🏆", color: "#121212", isMultiplier: true },
     { text: "+2 🏆", color: "#121212", isMultiplier: true },
@@ -396,7 +396,9 @@ function drawWheel(ctx, centerX, centerY, radius) {
         const option = rouletteOptions[i];
         // Todos los premios son multiplicadores, determinar tipo
         let prizeValue = 0;
-        if (option.text.includes("+3")) {
+        if (option.text.includes("+4")) {
+            prizeValue = 3000; // Máximo valor para +4
+        } else if (option.text.includes("+3")) {
             prizeValue = 2000; // Máximo valor para +3
         } else if (option.text.includes("+2")) {
             prizeValue = 1500; // Alto valor para +2
@@ -404,7 +406,7 @@ function drawWheel(ctx, centerX, centerY, radius) {
             prizeValue = 1000; // Valor medio para +1
         }
         
-        const isPremiumPrize = option.isMultiplier; // Todos son premios especiales ahora
+        const isSuper = !!option.isSuper;
         
         // El marcador está en la parte superior (ángulo 270 grados o -Math.PI/2)
         // Necesitamos que el marcador apunte al centro de cada segmento
@@ -423,8 +425,14 @@ function drawWheel(ctx, centerX, centerY, radius) {
             centerX, centerY, radius
         );
         
-        // Colores según sea +3, +2 o +1
-        if (option.text.includes("+3")) {
+        // Colores según sea +4, +3, +2 o +1
+        if (option.text.includes("+4")) {
+            // Degradado para +4 (morado)
+            gradient.addColorStop(0, '#2d033b');
+            gradient.addColorStop(0.7, '#512b81');
+            gradient.addColorStop(0.9, '#7c3aed');
+            gradient.addColorStop(1, '#c147e9');
+        } else if (option.text.includes("+3")) {
             // Degradado para +3 (rojo dorado)
             gradient.addColorStop(0, '#000000');
             gradient.addColorStop(0.7, '#300000');
@@ -455,7 +463,10 @@ function drawWheel(ctx, centerX, centerY, radius) {
             centerY + Math.sin(endAngle) * radius
         );
         // Línea divisoria especial para el premio
-        if (option.text.includes("+3")) {
+        if (option.text.includes("+4")) {
+            ctx.strokeStyle = 'rgba(193, 71, 233, 0.4)';
+            ctx.lineWidth = 2;
+        } else if (option.text.includes("+3")) {
             ctx.strokeStyle = 'rgba(255, 50, 50, 0.4)';
             ctx.lineWidth = 2;
         } else if (option.text.includes("+2")) {
@@ -477,7 +488,12 @@ function drawWheel(ctx, centerX, centerY, radius) {
         ctx.rotate(textAngle);
         
         // Colores especiales para los textos
-        if (option.text.includes("+3")) {
+        if (option.text.includes("+4")) {
+            ctx.fillStyle = '#c147e9'; // Morado para +4
+            ctx.font = 'bold 22px "Rubik", sans-serif';
+            ctx.shadowColor = 'rgba(193, 71, 233, 0.8)';
+            ctx.shadowBlur = 12;
+        } else if (option.text.includes("+3")) {
             ctx.fillStyle = '#ff5050'; // Rojo para +3
             ctx.font = 'bold 20px "Rubik", sans-serif';
             ctx.shadowColor = 'rgba(255, 80, 80, 0.7)';
@@ -518,11 +534,13 @@ function drawWheel(ctx, centerX, centerY, radius) {
         const midAngle = startAngle + anglePerOption / 2;
         const midRadius = radius * 0.7;
         
-        // Más destellos para +3, menos para +1
+        // Más destellos para +4, +3, menos para +1
         let numDestellos = 5; // Para +1
         let brilloMax = 0.6;
-        
-        if (option.text.includes("+3")) {
+        if (option.text.includes("+4")) {
+            numDestellos = 20;
+            brilloMax = 1.2;
+        } else if (option.text.includes("+3")) {
             numDestellos = 15;
             brilloMax = 1.0;
         } else if (option.text.includes("+2")) {
@@ -557,7 +575,9 @@ function drawWheel(ctx, centerX, centerY, radius) {
             
             // Colores según el tipo de premio
             let hue = 120; // Verde para +1
-            if (option.text.includes("+3")) {
+            if (option.text.includes("+4")) {
+                hue = 270; // Morado para +4
+            } else if (option.text.includes("+3")) {
                 hue = 0; // Rojo para +3
             } else if (option.text.includes("+2")) {
                 hue = 35; // Naranja para +2
@@ -658,11 +678,10 @@ function spinWheel() {
         
         // Mostrar el resultado
         const selectedPrizeText = rouletteOptions[selectedOption].text;
-        
-        // Identificar si es +3 o +2 usando includes para mayor seguridad
-        const isJackpot = selectedPrizeText.includes("+3");
-        const isMultiplier = selectedPrizeText.includes("+2") && !isJackpot;
-        const isPlusOne = selectedPrizeText.includes("+1") && !isJackpot && !isMultiplier;
+        const isSuper = !!rouletteOptions[selectedOption].isSuper;
+        const isJackpot = selectedPrizeText.includes("+3") && !isSuper;
+        const isMultiplier = selectedPrizeText.includes("+2") && !isJackpot && !isSuper;
+        const isPlusOne = selectedPrizeText.includes("+1") && !isJackpot && !isMultiplier && !isSuper;
         
         // Todos los premios ahora son multiplicadores (+1, +2 o +3)
         // Obtener todas las filas de la tabla de premios
@@ -680,7 +699,7 @@ function spinWheel() {
         
         if (currentMarkedCount > 0) {
             // Determinar cuántos niveles adicionales añadir
-            const levelsToAdd = isJackpot ? 3 : (isMultiplier ? 2 : 1);
+            const levelsToAdd = isSuper ? 4 : (isJackpot ? 3 : (isMultiplier ? 2 : 1));
             
             // Calcular el nuevo número de aciertos simulados (limitado a 10)
             const newMarkedCount = Math.min(10, currentMarkedCount + levelsToAdd);
@@ -691,7 +710,7 @@ function spinWheel() {
             
             // Logs de depuración
             console.log(`Premio seleccionado: ${selectedPrizeText}`);
-            console.log(`Es +3: ${isJackpot}, Es +2: ${isMultiplier}, Es +1: ${isPlusOne}`);
+            console.log(`Es +4: ${isSuper}, Es +3: ${isJackpot}, Es +2: ${isMultiplier}, Es +1: ${isPlusOne}`);
             console.log(`Aciertos actuales: ${currentMarkedCount}, Aciertos a añadir: ${levelsToAdd}, Nuevos aciertos: ${newMarkedCount}`);
             console.log(`Índice premio actual: ${currentPrizeIndex}, Nuevo índice premio: ${newPrizeIndex}`);
             
@@ -726,7 +745,9 @@ function spinWheel() {
             
             // Mensaje para el usuario
             let message = "";
-            if (isJackpot) {
+            if (isSuper) {
+                message = `¡+4! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
+            } else if (isJackpot) {
                 message = `¡+3! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
             } else if (isMultiplier) {
                 message = `¡+2! ¡Subiste de ${currentMarkedCount} a ${newMarkedCount} aciertos!`;
@@ -736,20 +757,38 @@ function spinWheel() {
             numberStatusDisplay.textContent = message;
             
             // Mostrar texto con el premio
-            const resultText = isJackpot ? "¡+3 ACIERTOS!" : (isMultiplier ? "¡+2 ACIERTOS!" : "¡+1 ACIERTO!");
+            let resultText = "";
+            if (isSuper) {
+                resultText = "¡+4 ACIERTOS!";
+            } else if (isJackpot) {
+                resultText = "¡+3 ACIERTOS!";
+            } else if (isMultiplier) {
+                resultText = "¡+2 ACIERTOS!";
+            } else {
+                resultText = "¡+1 ACIERTO!";
+            }
             showRouletteResult(resultText, true);
         }
         
         // Efectos visuales adicionales
-        if (isJackpot) {
-            console.log(`¡¡¡+3!!! ¡¡¡PREMIO MÁXIMO!!! 🌟🎉✨`);
+        if (isSuper) {
+            console.log(`¡¡¡+4!!! ¡¡¡PREMIO MÁXIMO!!! 🌟🎉✨`);
             
             // Añadir un efecto visual al botón para el premio máximo
+            spinButton.style.transition = 'all 0.3s';
+            spinButton.style.backgroundColor = '#7c3aed';
+            spinButton.style.color = '#fff';
+            spinButton.style.boxShadow = '0 0 20px 5px #c147e9';
+            spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡¡¡+4!!!';
+        } else if (isJackpot) {
+            console.log(`¡+3! ¡Subiste 3 niveles de premio! 🏆`);
+            
+            // Añadir un efecto visual al botón para +3
             spinButton.style.transition = 'all 0.3s';
             spinButton.style.backgroundColor = '#ff0000';
             spinButton.style.color = '#ffffff';
             spinButton.style.boxShadow = '0 0 15px rgba(255, 0, 0, 0.7)';
-            spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡¡¡+3!!!';
+            spinButton.innerHTML = '<i class="fas fa-trophy"></i> ¡+3!';
         } else if (isMultiplier) {
             console.log(`¡+2! ¡Subiste 2 niveles de premio! 🏆`);
             
