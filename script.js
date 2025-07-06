@@ -1,15 +1,15 @@
 // Configuración de premios
 const prizes = [
-    { matches: 10, name: "", description: "15x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 9, name: "", description: "13x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 8, name: "", description: "11x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 7, name: "", description: "9x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 6, name: "", description: "7x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 5, name: "", description: "5x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 4, name: "", description: "4x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 3, name: "", description: "3x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 2, name: "", description: "2x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
-    { matches: 1, name: "", description: "1x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" }
+    { matches: 10, name: "", description: "18x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 9, name: "", description: "16x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 8, name: "", description: "14x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 7, name: "", description: "12x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 6, name: "", description: "10x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 5, name: "", description: "8x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 4, name: "", description: "7x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 3, name: "", description: "6x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 2, name: "", description: "5x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" },
+    { matches: 1, name: "", description: "4x Piedras de Afilar Potentes", image: "https://res.cloudinary.com/pcsolucion/image/upload/v1745981510/honingstonet5_crjf7s.png" }
 ];
 
 // Variables del juego
